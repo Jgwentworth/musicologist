@@ -22,12 +22,19 @@
           <div class="col col-xs-12 col-md-6 text-center">
             <div class="row">
               <div class="col col-xs-12">
+                <div class="alert alert-info" id="addSongPrompt" role="alert">Start adding songs to get your playlist</div>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" id="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                    <span class="sr-only">80% Complete</span>
+                  </div>
+                </div>
                 <div class="input-group">
                   <input type="text" class="form-control" id="musicField" placeholder="Song Name, Artist...">
                   <span class="input-group-btn">
                     <button id="addButton" class="btn btn-default" type="button">Add!</button>
                   </span> 
                 </div>
+                <br>
               <div class="alert alert-danger" id="artist-error" role="alert">Please enter a Valid Song name, Artists...</div>  
               </div>  
             </div>
@@ -40,10 +47,12 @@
             </div>
             <div class="col col-md-3 hidden-sm hidden-xs"></div>
             <div class="col col-xs-12 col-md-6 text-center">
-            <button id="getPlaylistBtn" class="btn btn-default btn-lg">Get Playlist</button>
+            <button id="getPlaylistBtn" class="btn btn-default disabled">Get Playlist</button>
             <br>
             <h2 id="playlist-title">My Playlist</h2>
-            <h4 id="no-results">No results found</h4>
+            <br>
+            <div class="alert alert-danger" id="no-results" role="alert">No Results Found</div>
+            <div class="alert alert-danger" id="empty-list" role="alert">Add songs or artists to start your playlist</div>        
             <div id="playlist" class="list-group">
             </div>
           </div>  
