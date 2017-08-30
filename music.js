@@ -2,7 +2,7 @@ let musicInfo = [];
 
 $("#artist-error").hide();
 $("#playlist-title").hide();
-$("#similar-artist").hide();
+$("#current-artist").hide();
 $("#no-results").hide();
 $("#empty-list").hide();
 
@@ -33,7 +33,7 @@ $('body').on("click", "li.list-group-item", function(){
   $("#getPlaylistBtn").attr("value", "off")
   $("#playlist").empty()
   changeProgressBar(-1);
-  $("#similar-artist").hide();
+  $("#current-artist").hide();
   $("#addSongPrompt").show();
 })
 
@@ -58,9 +58,6 @@ function renderList() {
 }
 
 function addSongs(list){
-  //console.log(list);
-  shuffleArray(list);
-  //console.log(list);
   for (i = 0; i < list.length; i++) {
     let playlistSong = $("<div class='panel panel-default'>");
     playlistSong.append($("<div class='panel-body'>").text(list[i].trackName))
@@ -69,21 +66,9 @@ function addSongs(list){
   }
 }
 
-function shuffleArray(array) {
-  //console.log(array)
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-      //console.log(array)
-    return array;
-}
-
 let progressBar = 0
-function changeProgressBar(val){
 
+function changeProgressBar(val){
   if (val > 0) {
     progressBar = progressBar + 20;
     if (progressBar >= 100) {
@@ -135,8 +120,41 @@ $('#getPlaylistBtn').click(function (event) {
     return
   }
   $("#playlist-title").show();
-  $("#similar-artist").show();
-  // TODO: Display songs with thumbnail on album
+  $("#current-artist").show();
   // TODO: Use second api to find top songs
   displayPlaylist();
+  getArtistImage();
 });
+
+function getArtistImage () {
+ for (i=0; i < musicInfo.length; i ++) {
+    const artistName = musicInfo[i]
+    $.ajax({
+      url: 'http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=' + artistName +'&api_key=cd81bd3654a50594fba845d939c62fd2&format=json',
+      dataType: 'json'
+    }).then(function(resp){ 
+    let artistImage = resp.artist;
+    artistImage = artistImage.image;
+    artistImage = artistImage[3];
+    artistImage = artistImage['#text']
+    displayArtist(artistImage, artistName);   
+    })
+    .catch(function (err){
+    console.log ("something went wrong", err)
+    });
+}
+}
+
+function displayArtist(image, artist){
+
+  const imageThumb = $("<div class='row'>"); 
+  const tempImage = "<img src='" + image + "'>"; 
+  const tempArtist = "<h3>" + artist + "</h3>";
+  const $tempImage = $(tempImage);
+  const $tempArtist = $(tempArtist);
+  const $lineBr = $("<br>");
+  imageThumb.append($tempImage);
+  imageThumb.append($tempArtist);
+  imageThumb.append($lineBr)
+  $("#artist-thumb").append(imageThumb);
+}
