@@ -30,6 +30,7 @@ $('body').on("click", "li.list-group-item", function(){
   musicInfo = result;
   $(this).remove();
   $("#getPlaylistBtn").attr("class", "btn btn-default disabled")
+  $("#getPlaylistBtn").attr("value", "off")
   $("#playlist").empty()
   changeProgressBar(-1);
   $("#similar-artist").hide();
@@ -58,7 +59,7 @@ function renderList() {
 
 function addSongs(list){
   //console.log(list);
-  shuffle(list);
+  shuffleArray(list);
   //console.log(list);
   for (i = 0; i < list.length; i++) {
     let playlistSong = $("<div class='panel panel-default'>");
@@ -68,27 +69,17 @@ function addSongs(list){
   }
 }
 
-// TODO shuffle function
-function shuffle(array) {
-  console.log(array)
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-  console.log(array)
-  return array;
+function shuffleArray(array) {
+  //console.log(array)
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+      //console.log(array)
+    return array;
 }
-
 
 let progressBar = 0
 function changeProgressBar(val){
@@ -98,6 +89,7 @@ function changeProgressBar(val){
     if (progressBar >= 100) {
       progressBar = 100;
       $("#getPlaylistBtn").attr( "class", "btn btn-primary btn-lg");
+      $("#getPlaylistBtn").attr( "value", "on");
       $("#addSongPrompt").hide();
     }
   } else {
@@ -113,7 +105,6 @@ function changeProgressBar(val){
 
 function displayPlaylist(){
   $("#playlist").empty()
-  
   for (i=0; i < musicInfo.length; i ++) {
     let artistName = musicInfo[i]
     $.ajax({
@@ -132,13 +123,17 @@ function displayPlaylist(){
     console.log ("something went wrong", err)
     });
   };
-  }
+}
 
 $('#getPlaylistBtn').click(function (event) {
+  const getPlaylistValue = $("#getPlaylistBtn").attr("value")
   if (musicInfo.length == 0) {
     $("#empty-list").show();
     return
   };
+  if (getPlaylistValue == "off") {
+    return
+  }
   $("#playlist-title").show();
   $("#similar-artist").show();
   // TODO: Display songs with thumbnail on album
